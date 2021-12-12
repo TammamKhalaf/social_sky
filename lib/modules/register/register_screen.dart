@@ -2,10 +2,10 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_sky/layout/social_layout.dart';
 import 'package:social_sky/modules/register/cubit/cubit.dart';
 import 'package:social_sky/modules/register/cubit/states.dart';
 import 'package:social_sky/shared/components/component_s.dart';
-
 
 class RegisterScreen extends StatelessWidget {
   var formkey = GlobalKey<FormState>();
@@ -20,28 +20,8 @@ class RegisterScreen extends StatelessWidget {
       create: (BuildContext context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
         listener: (context, state) {
-          if (state is RegisterSuccessState) {
-            //logged in
-            //if (state.loginModel.status) {
-              //go to home screen
-              // print(state.loginModel.data);
-              // print(state.loginModel.message);
-              // print('token is ${state.loginModel.data.token}');
-
-              // CacheHelper.saveData('token', state.loginModel.data.token)
-              //     .then((value) {
-              //   token = state.loginModel.data.token;
-              //   Navigator.pushAndRemoveUntil(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (BuildContext context) => ShopLayout()),
-              //           (Route<dynamic> route) => false);
-              // });
-            //} else {
-              //error
-              //print(state.loginModel.message);
-              //showToast(msg: state.loginModel.message, state: ToastStates.ERROR);
-            //}
+          if (state is CreateUserSuccessState) {
+            navigateAndFinish(context, SocialLayout());
           }
         },
         builder: (context, state) => Scaffold(
@@ -134,13 +114,13 @@ class RegisterScreen extends StatelessWidget {
                                   name: nameController.text,
                                   email: emailController.text,
                                   password: passwordController.text,
-                                  phone: phoneController.text
-                              );
+                                  phone: phoneController.text);
                             }
                           },
                           isUpperCase: true,
                         ),
-                        fallback: (context) => Center(child: const CircularProgressIndicator()),
+                        fallback: (context) =>
+                            Center(child: const CircularProgressIndicator()),
                       ),
                     ],
                   ),
@@ -151,5 +131,9 @@ class RegisterScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void navigateAndFinish(BuildContext context, Widget socialLayout) {
+    Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => SocialLayout()),(Route<dynamic> route) => false);
   }
 }
