@@ -18,13 +18,19 @@ class RegisterCubit extends Cubit<RegisterStates> {
     required String email,
     required String password,
     required String phone,
+    required bool isEmailVerified,
   }) {
     emit(RegisterLoadingState());
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((value) {
-      emit(RegisterSuccessState());
-      userCreate(name: name, email: email, phone: phone, uId: value.user!.uid);
+      //emit(RegisterSuccessState());
+      userCreate(
+          name: name,
+          email: email,
+          phone: phone,
+          uId: value.user!.uid,
+      );
     }).catchError((error) {
       emit(RegisterErrorState(error));
     });
@@ -36,8 +42,12 @@ class RegisterCubit extends Cubit<RegisterStates> {
     required String phone,
     required String uId,
   }) {
-    UserModel userModel =
-        UserModel(name: name, email: email, phone: phone, uId: uId);
+    UserModel userModel = UserModel(
+        name: name,
+        email: email,
+        phone: phone,
+        uId: uId,
+        isEmailVerified: false);
 
     FirebaseFirestore.instance
         .collection('users')

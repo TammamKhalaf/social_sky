@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:social_sky/layout/social_layout.dart';
 
 Widget defaultFormField({
   required TextEditingController controller,
@@ -123,10 +124,10 @@ Widget buildListProduct(
                 if (model.discount != 0 && isOldPrice)
                   Container(
                     color: Colors.red,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 5.0,
                     ),
-                    child: Text(
+                    child: const Text(
                       'DISCOUNT',
                       style: TextStyle(
                         fontSize: 8.0,
@@ -136,7 +137,7 @@ Widget buildListProduct(
                   ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               width: 20.0,
             ),
             Expanded(
@@ -147,28 +148,28 @@ Widget buildListProduct(
                     model.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14.0,
                       height: 1.3,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Row(
                     children: [
                       Text(
                         model.price.toString(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.deepOrange,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 5.0,
                       ),
                       if (model.discount != 0 && isOldPrice)
                         Text(
                           model.oldPrice.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 10.0,
                             color: Colors.grey,
                             decoration: TextDecoration.lineThrough,
@@ -183,3 +184,7 @@ Widget buildListProduct(
         ),
       ),
     );
+
+void navigateAndFinish(BuildContext context, Widget socialLayout) {
+  Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => SocialLayout()),(Route<dynamic> route) => false);
+}
