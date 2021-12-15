@@ -18,6 +18,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
     required String email,
     required String password,
     required String phone,
+    required String image,
     required bool isEmailVerified,
   }) {
     emit(RegisterLoadingState());
@@ -29,6 +30,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
           name: name,
           email: email,
           phone: phone,
+          image:image,
           uId: value.user!.uid,
       );
     }).catchError((error) {
@@ -40,14 +42,19 @@ class RegisterCubit extends Cubit<RegisterStates> {
     required String name,
     required String email,
     required String phone,
-    required String uId,
+    required String uId, required String image,
   }) {
-    UserModel userModel = UserModel(
+    UserModel userModel =
+    UserModel(
         name: name,
         email: email,
         phone: phone,
         uId: uId,
-        isEmailVerified: false);
+        isEmailVerified: false,
+        image: 'https://image.freepik.com/free-photo/mand-holding-cup_1258-340.jpg',
+      bio: 'write your bio...',
+      cover: 'https://image.freepik.com/free-vector/flat-arabic-pattern-background_79603-1826.jpg',
+    );
 
     FirebaseFirestore.instance
         .collection('users')

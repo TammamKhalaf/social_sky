@@ -128,7 +128,8 @@ class RegisterScreen extends StatelessWidget {
                                           email: emailController.text,
                                           password: passwordController.text,
                                           phone: phoneController.text,
-                                          isEmailVerified: false);
+                                          isEmailVerified: false,
+                                          image: '');
                                     }
                                   },
                                   isUpperCase: true,
