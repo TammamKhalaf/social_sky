@@ -10,7 +10,7 @@ class UserModel {
 
   UserModel(
       {required this.name,
-      required this.email,
+        required this.email,
       required this.phone,
       required this.uId,
       required this.image,
