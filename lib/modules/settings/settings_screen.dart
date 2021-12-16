@@ -16,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
         listener: (context, state) => {},
         builder: (context, state) {
           var userModel = SocialCubit.get(context).model;
-
+          print(userModel.toString());
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -35,7 +35,7 @@ class SettingsScreen extends StatelessWidget {
                                 topRight: Radius.circular(10),
                                 topLeft: Radius.circular(10)),
                             image: DecorationImage(
-                              image: NetworkImage('${userModel?.cover ?? ''}'),
+                              image: NetworkImage(userModel?.cover ?? ''),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -49,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
                         child: CircleAvatar(
                           radius: 60.0,
                           backgroundImage:
-                              NetworkImage('${userModel?.image ?? ''}'),
+                              NetworkImage(userModel?.image ?? ''),
                         ),
                       ),
                     ],
@@ -59,11 +59,11 @@ class SettingsScreen extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  '${userModel?.name ?? ''}',
+                  userModel?.name ?? '',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 Text(
-                  '${userModel?.bio ?? 'bio ...'}',
+                  userModel?.bio ?? 'bio ...',
                   style: Theme.of(context).textTheme.caption,
                 ),
                 Padding(
