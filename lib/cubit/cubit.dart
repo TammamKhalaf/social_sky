@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_sky/cubit/states.dart';
+import 'package:social_sky/models/post_model.dart';
 import 'package:social_sky/models/user_model.dart';
 import 'package:social_sky/modules/chats/chats_screen.dart';
 import 'package:social_sky/modules/feeds/feeds_screen.dart';
@@ -99,7 +100,12 @@ class SocialCubit extends Cubit<SocialStates> {
         .then((value) {
       value.ref.getDownloadURL().then((value) {
         //emit(SocialUploadProfileImageSuccessState());
-        updateUser(name: name, phone: phone, bio: bio, profile:value,cover:model!.cover);
+        updateUser(
+            name: name,
+            phone: phone,
+            bio: bio,
+            profile: value,
+            cover: model!.cover);
       }).catchError((error) {
         emit(SocialUploadProfileImageErrorState());
       });
@@ -123,7 +129,12 @@ class SocialCubit extends Cubit<SocialStates> {
         .then((value) {
       value.ref.getDownloadURL().then((value) {
         //emit(SocialUploadCoverImageSuccessState());
-        updateUser(name: name, phone: phone, bio: bio, cover: value,profile: model!.image);
+        updateUser(
+            name: name,
+            phone: phone,
+            bio: bio,
+            cover: value,
+            profile: model!.image);
       }).catchError((error) {
         emit(SocialUploadCoverImageErrorState());
       });
@@ -156,15 +167,14 @@ class SocialCubit extends Cubit<SocialStates> {
     String? cover,
   }) {
     UserModel userModel = UserModel(
-      name: name,
-      phone: phone,
-      bio: bio,
-      uId: model!.uId,
-      email: model!.email,
-      image: profile??model!.image,
-      cover: cover??model!.cover,
-      isEmailVerified: model!.isEmailVerified
-    );
+        name: name,
+        phone: phone,
+        bio: bio,
+        uId: model!.uId,
+        email: model!.email,
+        image: profile ?? model!.image,
+        cover: cover ?? model!.cover,
+        isEmailVerified: model!.isEmailVerified);
 
     FirebaseFirestore.instance
         .collection('users')
@@ -174,6 +184,76 @@ class SocialCubit extends Cubit<SocialStates> {
       getUserData();
     }).catchError((error) {
       emit(SocialUpdateErrorState());
+    });
+  }
+
+  File postImage = File('');
+
+  Future<void> getPostImage() async {
+    // Pick an image
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      postImage = File(pickedFile.path);
+      emit(SocialPostImagePickedSuccessState());
+    } else {
+      emit(SocialPostImagePickedErrorState());
+    }
+  }
+
+  void removePostImage(){
+    postImage = File('');
+    emit(SocialRemovePostImageState());
+  }
+
+  void uploadPostImage({
+    required String text,
+    required String dateTime,
+  }) {
+    emit(SocialCreatePostLoadingState());
+
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('posts/${Uri.file(postImage.path).pathSegments.last}')
+        .putFile(postImage)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        createPost(
+          dateTime: dateTime,
+          text: text,
+          postImage: value,
+        );
+      }).catchError((error) {
+        emit(SocialCreatePostErrorState());
+      });
+    }).catchError((error) {
+      emit(SocialCreatePostErrorState());
+    });
+  }
+
+  void createPost({
+    required String text,
+    required String dateTime,
+    String? postImage,
+  }) {
+    emit(SocialCreatePostLoadingState());
+
+    PostModel postModel = PostModel(
+      name: model!.name,
+      uId: model!.uId,
+      image: model!.image,
+      dateTime: dateTime,
+      text: text,
+      postImage: postImage ?? '',
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .add(postModel.toMap())
+        .then((value) {
+      emit(SocialCreatePostSuccessState());
+    }).catchError((error) {
+      emit(SocialCreatePostErrorState());
     });
   }
 }
