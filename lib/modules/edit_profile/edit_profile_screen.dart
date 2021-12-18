@@ -16,7 +16,7 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var userModel = SocialCubit.get(context).model;
+    var userModel = SocialCubit.get(context).user_model;
 
     nameController.text = userModel?.name ?? '';
     bioController.text = userModel?.bio ?? '';

@@ -75,3 +75,19 @@ class SocialCreatePostErrorState extends SocialStates {}
 class SocialCreatePostSuccessState extends SocialStates {}
 
 class SocialRemovePostImageState extends SocialStates {}
+
+class SocialSendMessageSuccessState extends SocialStates {}
+
+class SocialSendMessageErrorState extends SocialStates {
+  final String error;
+
+  SocialSendMessageErrorState(this.error);
+}
+
+class SocialGetMessagesSuccessState extends SocialStates {}
+
+class SocialGetMessagesErrorState extends SocialStates {
+  final String error;
+
+  SocialGetMessagesErrorState(this.error);
+}
