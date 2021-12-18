@@ -15,7 +15,8 @@ class FeedsScreen extends StatelessWidget {
     return BlocConsumer<SocialCubit, SocialStates>(
       listener: (context, state) {},
       builder: (context, state) => ConditionalBuilder(
-        condition: SocialCubit.get(context).posts.length > 0,
+        condition: SocialCubit.get(context).posts.length > 0 &&
+            SocialCubit.get(context).model != null,
         builder: (context) => SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
@@ -42,7 +43,7 @@ class FeedsScreen extends StatelessWidget {
               ),
               ListView.separated(
                 itemBuilder: (context, index) => buildPostItem(
-                    SocialCubit.get(context).posts[index], context),
+                    SocialCubit.get(context).posts[index], context, index),
                 itemCount: SocialCubit.get(context).posts.length,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -61,7 +62,7 @@ class FeedsScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPostItem(PostModel model, context) => Card(
+  Widget buildPostItem(PostModel model, context, index) => Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         elevation: 5.0,
         margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -195,7 +196,7 @@ class FeedsScreen extends StatelessWidget {
                                 width: 5.0,
                               ),
                               Text(
-                                '0',
+                                '${SocialCubit.get(context).likes[index]}',
                                 style: Theme.of(context).textTheme.caption,
                               )
                             ],
@@ -277,7 +278,10 @@ class FeedsScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      SocialCubit.get(context)
+                          .likePost(SocialCubit.get(context).postsId[index]);
+                    },
                   ),
                 ],
               ),

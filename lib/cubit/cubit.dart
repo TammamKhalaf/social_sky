@@ -201,7 +201,7 @@ class SocialCubit extends Cubit<SocialStates> {
     }
   }
 
-  void removePostImage(){
+  void removePostImage() {
     postImage = File('');
     emit(SocialRemovePostImageState());
   }
@@ -258,16 +258,38 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   List<PostModel> posts = [];
+  List<String> postsId = [];
+  List<int> likes = [];
 
-  void getPosts(){
-      FirebaseFirestore.instance.collection('posts').get().then((value){
-        emit(SocialGetPostSuccessState());
-        value.docs.forEach((element) {
+  void getPosts() {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+      emit(SocialGetPostSuccessState());
+      value.docs.forEach((element) {
+        element.reference.collection('likes').get().then((value){
+          likes.add(value.docs.length);
+          postsId.add(element.id);
           posts.add(PostModel.fromJson(element.data()));
-        });
+        }).catchError((error){});
 
-      }).catchError((error){
-        emit(SocialGetPostErrorState(error.toString()));
+
       });
+    }).catchError((error) {
+      emit(SocialGetPostErrorState(error.toString()));
+    });
+  }
+
+  void likePost(String postId) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(model!.uId)
+        .set({'like': true}).then((value) {
+      emit(SocialLikePostSuccessState());
+    }).catchError(
+      (error) {
+        emit(SocialLikePostErrorState(error.toString()));
+      },
+    );
   }
 }
